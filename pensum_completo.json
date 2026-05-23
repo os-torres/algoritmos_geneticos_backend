@@ -1,0 +1,227 @@
+{
+  "_comentario": "Pensum completo 2020 — Ing. Sistemas — Universidad de la Amazonia (50 materias × 2 grupos = 100 entradas)",
+  "_instrucciones": [
+    "IMPORTANTE: Para optimizar todo el pensum necesitas al menos 10 salones.",
+    "Se recomienda optimizar semestre a semestre:",
+    "  1. Importa este JSON (accion=reemplazar).",
+    "  2. En la pantalla de Optimización, selecciona 'Semestre a optimizar'.",
+    "  3. El AG solo usa las materias de ese semestre (28 sesiones aprox.).",
+    "  4. Así obtienes resultados de alta calidad en segundos.",
+    "Con 100 sesiones simultáneas el AG tarda más y la calidad baja."
+  ],
+  "accion": "reemplazar",
+  "materias": [
+    {"nombre": "Matemáticas I",                               "semestre": 1, "grupo": "A", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Física I",                                    "semestre": 1, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Biología General",                            "semestre": 1, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Introducción a la Ingeniería",                "semestre": 1, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Lógica y Algoritmos I",                       "semestre": 1, "grupo": "A", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Comunicación",                                "semestre": 1, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Deporte y Cultura",                           "semestre": 1, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Matemáticas I",                               "semestre": 1, "grupo": "B", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Física I",                                    "semestre": 1, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Biología General",                            "semestre": 1, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Introducción a la Ingeniería",                "semestre": 1, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Lógica y Algoritmos I",                       "semestre": 1, "grupo": "B", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Comunicación",                                "semestre": 1, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Deporte y Cultura",                           "semestre": 1, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+
+    {"nombre": "Constitución y Democracia",                   "semestre": 2, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Matemáticas II",                              "semestre": 2, "grupo": "A", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Física II",                                   "semestre": 2, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Química I",                                   "semestre": 2, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Lógica y Algoritmos II",                      "semestre": 2, "grupo": "A", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Teoría General de Sistemas",                  "semestre": 2, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Constitución y Democracia",                   "semestre": 2, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Matemáticas II",                              "semestre": 2, "grupo": "B", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Física II",                                   "semestre": 2, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Química I",                                   "semestre": 2, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Lógica y Algoritmos II",                      "semestre": 2, "grupo": "B", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Teoría General de Sistemas",                  "semestre": 2, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+
+    {"nombre": "Idioma Extranjero I",                         "semestre": 3, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Álgebra Lineal",                              "semestre": 3, "grupo": "A", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Matemáticas Discreta",                        "semestre": 3, "grupo": "A", "creditos": 4, "bloques": [3, 2]},
+    {"nombre": "Análisis de Sistemas",                        "semestre": 3, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Estructuras de Datos I",                      "semestre": 3, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Idioma Extranjero I",                         "semestre": 3, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Álgebra Lineal",                              "semestre": 3, "grupo": "B", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Matemáticas Discreta",                        "semestre": 3, "grupo": "B", "creditos": 4, "bloques": [3, 2]},
+    {"nombre": "Análisis de Sistemas",                        "semestre": 3, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Estructuras de Datos I",                      "semestre": 3, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+
+    {"nombre": "Ecuaciones Diferenciales",                    "semestre": 4, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Estadística para Ingeniería",                 "semestre": 4, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Ingeniería de Software I",                    "semestre": 4, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Sistemas Operativos",                         "semestre": 4, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Estructuras de Datos II",                     "semestre": 4, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Ecuaciones Diferenciales",                    "semestre": 4, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Estadística para Ingeniería",                 "semestre": 4, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Ingeniería de Software I",                    "semestre": 4, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Sistemas Operativos",                         "semestre": 4, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Estructuras de Datos II",                     "semestre": 4, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+
+    {"nombre": "Idioma Extranjero II",                        "semestre": 5, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Métodos Numéricos",                           "semestre": 5, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Ingeniería de Software II",                   "semestre": 5, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Programación Web",                            "semestre": 5, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Diseño de Base de Datos",                     "semestre": 5, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Idioma Extranjero II",                        "semestre": 5, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Métodos Numéricos",                           "semestre": 5, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Ingeniería de Software II",                   "semestre": 5, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Programación Web",                            "semestre": 5, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Diseño de Base de Datos",                     "semestre": 5, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+
+    {"nombre": "Filosofía e Historia de la Ciencia",          "semestre": 6, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Modelos Determinísticos",                     "semestre": 6, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Ingeniería de Software III",                  "semestre": 6, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Programación Móvil",                          "semestre": 6, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Redes Informáticas I",                        "semestre": 6, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Filosofía e Historia de la Ciencia",          "semestre": 6, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Modelos Determinísticos",                     "semestre": 6, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Ingeniería de Software III",                  "semestre": 6, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Programación Móvil",                          "semestre": 6, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Redes Informáticas I",                        "semestre": 6, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+
+    {"nombre": "Metodología de la Investigación I",           "semestre": 7, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Proyectos Software",                          "semestre": 7, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Inteligencia Computacional I",                "semestre": 7, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Redes Informáticas II",                       "semestre": 7, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Administración de Base de Datos",             "semestre": 7, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Metodología de la Investigación I",           "semestre": 7, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Proyectos Software",                          "semestre": 7, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Inteligencia Computacional I",                "semestre": 7, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Redes Informáticas II",                       "semestre": 7, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Administración de Base de Datos",             "semestre": 7, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+
+    {"nombre": "Desarrollo Humano",                           "semestre": 8, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Ética",                                       "semestre": 8, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Metodología de la Investigación II",          "semestre": 8, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Planeación Estratégica de SI",                "semestre": 8, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Inteligencia Computacional II",               "semestre": 8, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Taller de Emprendimiento e Innovación",       "semestre": 8, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Desarrollo Humano",                           "semestre": 8, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Ética",                                       "semestre": 8, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Metodología de la Investigación II",          "semestre": 8, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Planeación Estratégica de SI",                "semestre": 8, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Inteligencia Computacional II",               "semestre": 8, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Taller de Emprendimiento e Innovación",       "semestre": 8, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+
+    {"nombre": "Universidad Región y Medio Ambiente",         "semestre": 9, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Gestión Tecnológica",                         "semestre": 9, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Taller de Escritura Científica",              "semestre": 9, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Electiva I",                                  "semestre": 9, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Electiva II",                                 "semestre": 9, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Universidad Región y Medio Ambiente",         "semestre": 9, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Gestión Tecnológica",                         "semestre": 9, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Taller de Escritura Científica",              "semestre": 9, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Electiva I",                                  "semestre": 9, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Electiva II",                                 "semestre": 9, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+
+    {"nombre": "Electiva III",                                "semestre":10, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Electiva IV",                                 "semestre":10, "grupo": "A", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Electiva III",                                "semestre":10, "grupo": "B", "creditos": 4, "bloques": [2, 2]},
+    {"nombre": "Electiva IV",                                 "semestre":10, "grupo": "B", "creditos": 4, "bloques": [2, 2]}
+  ],
+  "profesores": [
+    {
+      "nombre": "Dr. Matemáticas",
+      "materias": [
+        ["Matemáticas I","A"],["Matemáticas I","B"],
+        ["Matemáticas II","A"],["Matemáticas II","B"],
+        ["Álgebra Lineal","A"],["Álgebra Lineal","B"],
+        ["Ecuaciones Diferenciales","A"],["Ecuaciones Diferenciales","B"],
+        ["Métodos Numéricos","A"],["Métodos Numéricos","B"],
+        ["Modelos Determinísticos","A"],["Modelos Determinísticos","B"]
+      ],
+      "franjas_preferidas": [1,2,3,6,7,8,11,12,13,16,17,18,21,22,23]
+    },
+    {
+      "nombre": "Dra. Ciencias Básicas",
+      "materias": [
+        ["Física I","A"],["Física I","B"],
+        ["Física II","A"],["Física II","B"],
+        ["Biología General","A"],["Biología General","B"],
+        ["Química I","A"],["Química I","B"],
+        ["Matemáticas Discreta","A"],["Matemáticas Discreta","B"],
+        ["Estadística para Ingeniería","A"],["Estadística para Ingeniería","B"]
+      ],
+      "franjas_preferidas": [1,2,3,6,7,8,11,12,13,16,17,18,21,22,23]
+    },
+    {
+      "nombre": "Prof. Programación",
+      "materias": [
+        ["Lógica y Algoritmos I","A"],["Lógica y Algoritmos I","B"],
+        ["Lógica y Algoritmos II","A"],["Lógica y Algoritmos II","B"],
+        ["Análisis de Sistemas","A"],["Análisis de Sistemas","B"],
+        ["Estructuras de Datos I","A"],["Estructuras de Datos I","B"],
+        ["Estructuras de Datos II","A"],["Estructuras de Datos II","B"],
+        ["Sistemas Operativos","A"],["Sistemas Operativos","B"]
+      ],
+      "franjas_preferidas": [3,8,13,18,23,4,5,9,10,14,15,19,20,24,25]
+    },
+    {
+      "nombre": "Prof. Ing. Software",
+      "materias": [
+        ["Introducción a la Ingeniería","A"],["Introducción a la Ingeniería","B"],
+        ["Teoría General de Sistemas","A"],["Teoría General de Sistemas","B"],
+        ["Ingeniería de Software I","A"],["Ingeniería de Software I","B"],
+        ["Ingeniería de Software II","A"],["Ingeniería de Software II","B"],
+        ["Ingeniería de Software III","A"],["Ingeniería de Software III","B"],
+        ["Proyectos Software","A"],["Proyectos Software","B"],
+        ["Planeación Estratégica de SI","A"],["Planeación Estratégica de SI","B"]
+      ],
+      "franjas_preferidas": [2,7,12,17,22,4,5,9,10,14,15]
+    },
+    {
+      "nombre": "Prof. BD y Redes",
+      "materias": [
+        ["Diseño de Base de Datos","A"],["Diseño de Base de Datos","B"],
+        ["Administración de Base de Datos","A"],["Administración de Base de Datos","B"],
+        ["Redes Informáticas I","A"],["Redes Informáticas I","B"],
+        ["Redes Informáticas II","A"],["Redes Informáticas II","B"]
+      ],
+      "franjas_preferidas": [4,5,9,10,14,15,19,20,24,25]
+    },
+    {
+      "nombre": "Prof. Web y Móvil",
+      "materias": [
+        ["Programación Web","A"],["Programación Web","B"],
+        ["Programación Móvil","A"],["Programación Móvil","B"],
+        ["Taller de Emprendimiento e Innovación","A"],["Taller de Emprendimiento e Innovación","B"],
+        ["Gestión Tecnológica","A"],["Gestión Tecnológica","B"],
+        ["Electiva I","A"],["Electiva I","B"],
+        ["Electiva II","A"],["Electiva II","B"],
+        ["Electiva III","A"],["Electiva III","B"],
+        ["Electiva IV","A"],["Electiva IV","B"]
+      ],
+      "franjas_preferidas": [4,5,9,10,14,15,19,20,24,25]
+    },
+    {
+      "nombre": "Prof. Investigación",
+      "materias": [
+        ["Metodología de la Investigación I","A"],["Metodología de la Investigación I","B"],
+        ["Metodología de la Investigación II","A"],["Metodología de la Investigación II","B"],
+        ["Taller de Escritura Científica","A"],["Taller de Escritura Científica","B"],
+        ["Inteligencia Computacional I","A"],["Inteligencia Computacional I","B"],
+        ["Inteligencia Computacional II","A"],["Inteligencia Computacional II","B"]
+      ],
+      "franjas_preferidas": [1,2,3,6,7,8,11,12,13,16,17,18,21,22,23]
+    },
+    {
+      "nombre": "Prof. Humanidades",
+      "materias": [
+        ["Comunicación","A"],["Comunicación","B"],
+        ["Deporte y Cultura","A"],["Deporte y Cultura","B"],
+        ["Constitución y Democracia","A"],["Constitución y Democracia","B"],
+        ["Idioma Extranjero I","A"],["Idioma Extranjero I","B"],
+        ["Idioma Extranjero II","A"],["Idioma Extranjero II","B"],
+        ["Filosofía e Historia de la Ciencia","A"],["Filosofía e Historia de la Ciencia","B"],
+        ["Desarrollo Humano","A"],["Desarrollo Humano","B"],
+        ["Ética","A"],["Ética","B"],
+        ["Universidad Región y Medio Ambiente","A"],["Universidad Región y Medio Ambiente","B"]
+      ],
+      "franjas_preferidas": [4,5,9,10,14,15,19,20,24,25]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "_comentario": "Pensum 2020 — Ing. Sistemas — Universidad de la Amazonia",
+  "_instrucciones": [
+    "1. En la app: Datos > ícono de subir archivo > selecciona este JSON.",
+    "2. 'accion': 'reemplazar' borra todo y carga este pensum.",
+    "3. 'accion': 'agregar'   añade al pensum existente (útil para cargar un semestre adicional).",
+    "4. Edita 'bloques' para ajustar horas: [3,2]=5h/sem, [2,2]=4h/sem.",
+    "5. En 'profesores', 'materias' es lista de [NombreMateria, Grupo]."
+  ],
+  "accion": "reemplazar",
+  "materias": [
+    {"nombre": "Matemáticas I",                 "semestre": 1, "grupo": "A", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Física I",                      "semestre": 1, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Biología General",              "semestre": 1, "grupo": "A", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Introducción a la Ingeniería",  "semestre": 1, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Lógica y Algoritmos I",         "semestre": 1, "grupo": "A", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Comunicación",                  "semestre": 1, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Deporte y Cultura",             "semestre": 1, "grupo": "A", "creditos": 2, "bloques": [2, 2]},
+
+    {"nombre": "Matemáticas I",                 "semestre": 1, "grupo": "B", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Física I",                      "semestre": 1, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Biología General",              "semestre": 1, "grupo": "B", "creditos": 3, "bloques": [2, 2]},
+    {"nombre": "Introducción a la Ingeniería",  "semestre": 1, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Lógica y Algoritmos I",         "semestre": 1, "grupo": "B", "creditos": 3, "bloques": [3, 2]},
+    {"nombre": "Comunicación",                  "semestre": 1, "grupo": "B", "creditos": 2, "bloques": [2, 2]},
+    {"nombre": "Deporte y Cultura",             "semestre": 1, "grupo": "B", "creditos": 2, "bloques": [2, 2]}
+  ],
+  "profesores": [
+    {
+      "nombre": "Dr. Matemáticas",
+      "materias": [["Matemáticas I","A"],["Matemáticas I","B"]],
+      "franjas_preferidas": [1,2,3,6,7,8,11,12,13,16,17,18,21,22,23]
+    },
+    {
+      "nombre": "Dra. Ciencias Básicas",
+      "materias": [["Física I","A"],["Biología General","A"],["Física I","B"],["Biología General","B"]],
+      "franjas_preferidas": [1,2,3,6,7,8,11,12,13,16,17,18,21,22,23]
+    },
+    {
+      "nombre": "Prof. Programación",
+      "materias": [["Lógica y Algoritmos I","A"],["Lógica y Algoritmos I","B"]],
+      "franjas_preferidas": [3,8,13,18,23,4,5,9,10,14,15,19,20,24,25]
+    },
+    {
+      "nombre": "Prof. Ing. Software",
+      "materias": [["Introducción a la Ingeniería","A"],["Introducción a la Ingeniería","B"]],
+      "franjas_preferidas": [2,7,12,17,22,4,5,9,10]
+    },
+    {
+      "nombre": "Prof. BD y Redes",
+      "materias": [],
+      "franjas_preferidas": [4,5,9,10,14,15,19,20,24,25]
+    },
+    {
+      "nombre": "Prof. Web y Móvil",
+      "materias": [],
+      "franjas_preferidas": [4,5,9,10,14,15,19,20,24,25]
+    },
+    {
+      "nombre": "Prof. Investigación",
+      "materias": [],
+      "franjas_preferidas": [1,2,3,6,7,8,11,12,13,16,17,18,21,22,23]
+    },
+    {
+      "nombre": "Prof. Humanidades",
+      "materias": [["Comunicación","A"],["Deporte y Cultura","A"],["Comunicación","B"],["Deporte y Cultura","B"]],
+      "franjas_preferidas": [4,5,9,10,14,15,19,20,24,25]
+    }
+  ]
+}
