@@ -86,6 +86,7 @@ class ParamsRequest(BaseModel):
     prob_mutacion:    float = Field(default=0.10, ge=0.0, le=1.0)
     num_elite:        int   = Field(default=2,    ge=0,   le=20)
     tam_torneo:       int   = Field(default=5,    ge=2,   le=20)
+    paciencia:        int   = Field(default=30,   ge=5,   le=200)
     semilla:           int | None = None
     # Filtra qué semestres participan en la optimización (None / [] = todos)
     semestres_filtro:  list[int] | None = Field(default=None)
@@ -354,6 +355,7 @@ async def optimizar(params: ParamsRequest) -> dict[str, Any]:
         prob_mutacion=params.prob_mutacion,
         num_elite=params.num_elite,
         tam_torneo=params.tam_torneo,
+        paciencia=params.paciencia,
     )
     ag = crear_ag_desde_store(ag_params, semestres_filtro=params.semestres_filtro)
 
@@ -415,6 +417,7 @@ async def ws_optimizar(websocket: WebSocket):
         prob_mutacion=params.prob_mutacion,
         num_elite=params.num_elite,
         tam_torneo=params.tam_torneo,
+        paciencia=params.paciencia,
     )
     ag = crear_ag_desde_store(ag_params, semestres_filtro=params.semestres_filtro)
 

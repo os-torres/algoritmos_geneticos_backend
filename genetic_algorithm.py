@@ -413,11 +413,19 @@ class AlgoritmoGenetico:
         Ejecuta el AG generación por generación.
         Es un generador: hace yield con las estadísticas de cada generación
         para que el WebSocket pueda enviar actualizaciones en tiempo real.
+
+        Criterios de parada anticipada:
+          1. «optimo_encontrado»: el mejor individuo tiene 0 conflictos.
+          2. «estancamiento»: el mejor fitness no mejora en self.params.paciencia
+             generaciones consecutivas.
+          3. «generaciones_completadas»: se alcanzó num_generaciones (caso normal).
         """
         if semilla is not None:
             random.seed(semilla)
 
         poblacion = self._inicializar_poblacion()
+        mejor_fitness_historico: float = -1.0
+        generaciones_sin_mejora: int   = 0
 
         for gen in range(1, self.params.num_generaciones + 1):
             evaluaciones = [self.calcular_fitness(c) for c in poblacion]
@@ -432,6 +440,28 @@ class AlgoritmoGenetico:
             peor_fitness  = fitnesses[indices_ord[-1]]
             mejor_horario = self.decodificar(poblacion[mejor_idx])
 
+            # ── Seguimiento de estancamiento ──────────────────────────────────
+            if mejor_fitness > mejor_fitness_historico + 0.01:
+                mejor_fitness_historico = mejor_fitness
+                generaciones_sin_mejora = 0
+            else:
+                generaciones_sin_mejora += 1
+
+            # ── Determinar si esta es la última generación ────────────────────
+            sin_conflictos   = (conflictos_[mejor_idx] == 0)
+            estancado        = (generaciones_sin_mejora >= self.params.paciencia)
+            ultima_normal    = (gen == self.params.num_generaciones)
+            es_ultima        = sin_conflictos or estancado or ultima_normal
+
+            if sin_conflictos:
+                razon = "optimo_encontrado"
+            elif estancado:
+                razon = "estancamiento"
+            elif ultima_normal:
+                razon = "generaciones_completadas"
+            else:
+                razon = ""
+
             # Top-3 individuos con horario completo (para la vista de población)
             top_n = min(3, len(poblacion))
             top_individuos = []
@@ -444,12 +474,9 @@ class AlgoritmoGenetico:
                     "horario":    [a.to_dict() for a in horario_ind],
                 })
 
-            # Detalle de conflictos: se calcula solo en la última generación
-            # (o cuando no quedan conflictos) para no impactar el rendimiento.
-            es_ultima = (gen == self.params.num_generaciones)
-            sin_conflictos = (conflictos_[mejor_idx] == 0)
+            # Detalle de conflictos: solo en la última generación efectiva
             detalle: list[dict] = []
-            if es_ultima or sin_conflictos:
+            if es_ultima:
                 detalle = self.detectar_conflictos_detalle(poblacion[mejor_idx])
 
             yield ResultadoGeneracion(
@@ -461,9 +488,14 @@ class AlgoritmoGenetico:
                 mejor_horario=[a.to_dict() for a in mejor_horario],
                 top_individuos=top_individuos,
                 conflictos_detalle=detalle,
+                razon_parada=razon,
             )
 
-            # Nueva generación
+            # ── Parada anticipada ─────────────────────────────────────────────
+            if sin_conflictos or estancado:
+                break
+
+            # ── Nueva generación ──────────────────────────────────────────────
             nueva_pobl   = [deepcopy(poblacion[i]) for i in indices_ord[: self.params.num_elite]]
 
             while len(nueva_pobl) < self.params.tam_poblacion:

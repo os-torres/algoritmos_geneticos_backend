@@ -101,6 +101,8 @@ class ResultadoGeneracion:
     top_individuos: List[dict] = field(default_factory=list)
     # Descripción detallada de cada conflicto del mejor individuo
     conflictos_detalle: List[dict] = field(default_factory=list)
+    # Razón de parada: "" (en curso) | "optimo_encontrado" | "estancamiento" | "generaciones_completadas"
+    razon_parada: str = ""
 
     def to_dict(self) -> dict:
         return {
@@ -112,6 +114,7 @@ class ResultadoGeneracion:
             "mejor_horario":       self.mejor_horario,
             "top_individuos":      self.top_individuos,
             "conflictos_detalle":  self.conflictos_detalle,
+            "razon_parada":        self.razon_parada,
         }
 
 
@@ -123,3 +126,5 @@ class ParametrosAG:
     prob_mutacion:    float = 0.10
     num_elite:        int   = 2
     tam_torneo:       int   = 5
+    # Generaciones consecutivas sin mejora antes de detener el AG anticipadamente
+    paciencia:        int   = 30
