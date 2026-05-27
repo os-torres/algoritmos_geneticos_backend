@@ -4,6 +4,8 @@ Universidad de la Amazonia · Facultad de Ingeniería · Ingeniería de Sistemas
 """
 
 import datetime
+import threading
+import uuid
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
@@ -259,7 +261,7 @@ async def acerca_de() -> dict[str, Any]:
         "docente":     "Dr. Jesús Emilio Pinto",
         "integrantes": ["Oscar Ivan Torres", "Andres Carrillo", "Mercy Florez"],
         "version":     "1.0.0",
-        "tecnologias": {"backend": "Python + FastAPI", "frontend": "Flutter"},
+        "tecnologias": {"backend": "Python + FastAPI", "frontend": "Angular 21"},
     }
 
 
@@ -403,14 +405,83 @@ async def listar_sesiones():
 
 
 # ===========================================================================
-# RUTAS — Optimización
+# RUTAS — Optimización (patrón job asíncrono)
+#
+# El POST inicia el AG en un hilo de fondo y devuelve un job_id de inmediato,
+# evitando el timeout de 120 s de proxies/CDN cuando hay muchos semestres.
+# El cliente hace polling a GET /api/optimizar/estado/{job_id} cada pocos
+# segundos hasta que el estado cambia a "completado" o "error".
 # ===========================================================================
 
-@app.post("/api/optimizar", summary="Ejecutar algoritmo genético")
+# Almacén en memoria: job_id → estado del trabajo
+_jobs: dict[str, dict] = {}
+_MAX_JOBS = 10          # máximo de trabajos completados/fallidos en memoria
+
+
+def _limpiar_jobs_viejos() -> None:
+    """Elimina los trabajos terminados más antiguos para no acumular memoria."""
+    terminados = [jid for jid, j in _jobs.items()
+                  if j["estado"] in ("completado", "error")]
+    for jid in terminados[:-_MAX_JOBS]:
+        _jobs.pop(jid, None)
+
+
+def _ejecutar_ag(job_id: str, ag, params_dict: dict, semilla: int | None) -> None:
+    """Corre el AG en un hilo separado y actualiza _jobs[job_id] en tiempo real."""
+    historial: list[dict] = []
+    resultado_final: dict = {}
+    try:
+        for gen_result in ag.evolucionar(semilla=semilla):
+            historial.append({
+                "generacion":       gen_result.numero,
+                "mejor_fitness":    gen_result.mejor_fitness,
+                "promedio_fitness": gen_result.promedio_fitness,
+                "peor_fitness":     gen_result.peor_fitness,
+                "conflictos":       gen_result.conflictos_mejor,
+            })
+            resultado_final = gen_result.to_dict()
+            # Progreso visible en tiempo real para el cliente
+            _jobs[job_id].update({
+                "generacion_actual": gen_result.numero,
+                "fitness_actual":    round(gen_result.mejor_fitness, 2),
+                "conflictos_actual": gen_result.conflictos_mejor,
+            })
+
+        mejor_horario  = resultado_final.get("mejor_horario", [])
+        mejor_fitness  = resultado_final.get("mejor_fitness", 0)
+        conflictos_fin = resultado_final.get("conflictos_mejor", 0)
+
+        store.save_ultimo_horario({
+            "fecha":      datetime.datetime.now().isoformat(),
+            "fitness":    mejor_fitness,
+            "conflictos": conflictos_fin,
+            "parametros": params_dict,
+            "horario":    mejor_horario,
+        })
+
+        _jobs[job_id].update({
+            "estado": "completado",
+            "resultado": {
+                "parametros":              params_dict,
+                "generaciones_ejecutadas": len(historial),
+                "historial":               historial,
+                "mejor_horario":           mejor_horario,
+                "mejor_fitness":           mejor_fitness,
+                "conflictos_finales":      conflictos_fin,
+                "razon_parada":            resultado_final.get("razon_parada", ""),
+                "conflictos_detalle":      resultado_final.get("conflictos_detalle", []),
+                "top_individuos":          resultado_final.get("top_individuos", []),
+            },
+        })
+    except Exception as exc:
+        _jobs[job_id].update({"estado": "error", "error": str(exc)})
+
+
+@app.post("/api/optimizar", summary="Iniciar optimización genética (asíncrona)")
 async def optimizar(params: ParamsRequest) -> dict[str, Any]:
     """
-    Corre el AG completo y devuelve el resultado final junto con el historial
-    de todas las generaciones (para graficar la convergencia en el cliente).
+    Inicia el AG en un hilo de fondo y devuelve ``job_id`` de inmediato.
+    Usa ``GET /api/optimizar/estado/{job_id}`` para consultar el progreso.
     """
     _require_ready(semestres_filtro=params.semestres_filtro)
 
@@ -425,42 +496,52 @@ async def optimizar(params: ParamsRequest) -> dict[str, Any]:
     )
     ag = crear_ag_desde_store(ag_params, semestres_filtro=params.semestres_filtro)
 
-    historial: list[dict] = []
-    resultado_final: dict = {}
-
-    for gen_result in ag.evolucionar(semilla=params.semilla):
-        historial.append({
-            "generacion":       gen_result.numero,
-            "mejor_fitness":    gen_result.mejor_fitness,
-            "promedio_fitness": gen_result.promedio_fitness,
-            "peor_fitness":     gen_result.peor_fitness,
-            "conflictos":       gen_result.conflictos_mejor,
-        })
-        resultado_final = gen_result.to_dict()
-
-    mejor_horario  = resultado_final.get("mejor_horario", [])
-    mejor_fitness  = resultado_final.get("mejor_fitness", 0)
-    conflictos_fin = resultado_final.get("conflictos_mejor", 0)
-
-    # Persistir el mejor horario para consulta posterior sin re-optimizar
-    store.save_ultimo_horario({
-        "fecha":      datetime.datetime.now().isoformat(),
-        "fitness":    mejor_fitness,
-        "conflictos": conflictos_fin,
-        "parametros": params.model_dump(),
-        "horario":    mejor_horario,
-    })
-
-    return {
-        "parametros":              params.model_dump(),
-        "generaciones_ejecutadas": len(historial),
-        "historial":               historial,
-        "mejor_horario":           mejor_horario,
-        "mejor_fitness":           mejor_fitness,
-        "conflictos_finales":      conflictos_fin,
-        "razon_parada":            resultado_final.get("razon_parada", ""),
-        "conflictos_detalle":      resultado_final.get("conflictos_detalle", []),
+    job_id = str(uuid.uuid4())
+    _jobs[job_id] = {
+        "estado":            "en_progreso",
+        "generacion_actual": 0,
+        "fitness_actual":    0.0,
+        "conflictos_actual": 0,
+        "num_generaciones":  params.num_generaciones,
+        "resultado":         None,
+        "error":             None,
     }
+    _limpiar_jobs_viejos()
+
+    hilo = threading.Thread(
+        target=_ejecutar_ag,
+        args=(job_id, ag, params.model_dump(), params.semilla),
+        daemon=True,
+    )
+    hilo.start()
+
+    return {"job_id": job_id, "estado": "en_progreso"}
+
+
+@app.get("/api/optimizar/estado/{job_id}", summary="Consultar estado de un trabajo de optimización")
+async def estado_optimizacion(job_id: str) -> dict[str, Any]:
+    """
+    Devuelve el estado actual del trabajo:
+    - ``en_progreso``: incluye ``generacion_actual``, ``fitness_actual``, ``conflictos_actual``
+    - ``completado``:  incluye ``resultado`` completo (mismo formato que antes)
+    - ``error``:       incluye ``error`` con la descripción del fallo
+    """
+    job = _jobs.get(job_id)
+    if job is None:
+        raise HTTPException(404, detail=f"Trabajo '{job_id}' no encontrado o expirado.")
+
+    resp: dict[str, Any] = {
+        "estado":            job["estado"],
+        "generacion_actual": job.get("generacion_actual", 0),
+        "fitness_actual":    job.get("fitness_actual", 0.0),
+        "conflictos_actual": job.get("conflictos_actual", 0),
+        "num_generaciones":  job.get("num_generaciones", 0),
+    }
+    if job["estado"] == "completado":
+        resp["resultado"] = job["resultado"]
+    elif job["estado"] == "error":
+        resp["error"] = job["error"]
+    return resp
 
 
 # ===========================================================================

@@ -10,7 +10,9 @@ Representación por PERMUTACIÓN:
 
 Operadores genéticos:
   - Selección:    Torneo determinístico
-  - Cruzamiento:  Order Crossover (OX) — preserva la propiedad de permutación
+  - Cruzamiento:  Uniforme (UX) — preserva asignaciones sesión→ranura de ambos padres.
+                  Reemplaza OX (Order Crossover) que preservaba orden relativo de ranuras,
+                  propiedad útil en TSP pero irrelevante para problemas de asignación.
   - Mutación:     Tres operadores con selección aleatoria uniforme:
                     · Swap      — intercambia dos posiciones
                     · Inversión — voltea un segmento
@@ -18,12 +20,14 @@ Operadores genéticos:
   - Elitismo:     Los N mejores individuos pasan intactos a la siguiente generación
 
 Optimizaciones:
-  - Inicialización 30 % heurística (greedy) + 70 % aleatoria para acelerar convergencia
+  - Inicialización 60 % heurística (greedy) + 40 % aleatoria reparada
   - Reinicio parcial cuando hay estancamiento (conserva élites + regenera el resto)
-  - Evaluación de fitness paralelizada con ProcessPoolExecutor (fallback a secuencial)
+  - Evaluación de fitness paralelizada con ProcessPoolExecutor en Linux/macOS;
+    desactivada en Windows para evitar problemas con el método spawn de IIS.
 """
 
 import os
+import platform
 import random
 from concurrent.futures import ProcessPoolExecutor
 from copy import deepcopy
@@ -198,7 +202,10 @@ class AlgoritmoGenetico:
                 if a_i.sesion.profesor_id == a_j.sesion.profesor_id:
                     penalizacion += 200.0 / escala
                     conflictos   += 1
-                if a_i.sesion.grupo == a_j.sesion.grupo:
+                # Solapamiento de grupo: solo penaliza si es el MISMO grupo
+                # en el MISMO semestre (grupos distintos pueden coincidir en hora)
+                if (a_i.sesion.grupo == a_j.sesion.grupo
+                        and a_i.sesion.semestre == a_j.sesion.semestre):
                     penalizacion += 200.0 / escala
                     conflictos   += 1
 
@@ -263,10 +270,12 @@ class AlgoritmoGenetico:
             if prof and asig.franja.id in prof.franjas_preferidas:
                 bonificacion += 15
 
-        # ── Distribución de clases por días (por grupo) ───────────────────────
-        dias_por_grupo: dict[str, set] = {}
+        # ── Distribución de clases por días (por grupo + semestre) ───────────────
+        # Clave (grupo, semestre) para no mezclar grupos homónimos de distinto semestre
+        dias_por_grupo: dict[tuple, set] = {}
         for asig in asignaciones:
-            dias_por_grupo.setdefault(asig.sesion.grupo, set()).add(asig.franja.dia)
+            key = (asig.sesion.grupo, asig.sesion.semestre)
+            dias_por_grupo.setdefault(key, set()).add(asig.franja.dia)
         for dias in dias_por_grupo.values():
             if len(dias) >= 3:
                 bonificacion += 20
@@ -706,11 +715,11 @@ class AlgoritmoGenetico:
         asignadas a franjas inválidas (cruza almuerzo, excede 18:00) y las
         reasigna a ranuras libres válidas siguiendo la misma lógica del greedy.
 
-        Al aplicarse sobre cada descendiente después del cruzamiento OX, convierte
-        cromosomas infactibles en factibles (o casi factibles) sin coste evolutivo
-        extra, corrigiendo el defecto fundamental del OX: que mezcla
-        las correspondencias sesión→ranura y genera solapamientos masivos incluso
-        partiendo de dos padres perfectos.
+        Al aplicarse sobre cada descendiente después del cruzamiento UX (Uniforme)
+        y los operadores de mutación, convierte cromosomas infactibles en factibles
+        (o casi factibles) sin coste evolutivo extra.  Reasigna únicamente las
+        sesiones que presentan solapamientos o violan la jornada, preservando el
+        resto de las asignaciones heredadas de los padres.
 
         Complejidad: O(n²) para detección + O(k·m) para reparación,
         donde n=num_sesiones, k=sesiones conflictivas, m=|ranuras_libres|.
@@ -898,29 +907,82 @@ class AlgoritmoGenetico:
         ganador = max(indices, key=lambda i: fitnesses[i])
         return deepcopy(poblacion[ganador])
 
-    # ── Order Crossover (OX) ──────────────────────────────────────────────────
+    # ── Cruzamiento Uniforme (UX) ─────────────────────────────────────────────
+    #
+    # Sustituye a Order Crossover (OX) porque OX preserva el ORDEN RELATIVO de
+    # los elementos, propiedad útil en TSP pero sin significado en scheduling de
+    # asignación.  UX preserva en cambio la correspondencia posición→valor
+    # (sesión_i → ranura_j) de cada padre, que es exactamente lo que un AG de
+    # scheduling debe heredar.
+    #
+    # Funcionamiento:
+    #   1. Para cada posición i, elige la ranura de p1 o p2 con p=0.5.
+    #   2. Si la ranura elegida ya está en uso (duplicado), la posición queda
+    #      pendiente.
+    #   3. Las posiciones pendientes se rellenan con las ranuras aún sin usar
+    #      tomadas de p2 en orden de posición, preservando la mayor semejanza
+    #      posible con p2 para esas sesiones.
+    #
+    # El resultado sigue siendo una permutación válida y combina asignaciones
+    # concretas de ambos padres en lugar de mezclar solo su orden.
 
     @staticmethod
-    def _cruzamiento_ox(
+    def _cruzamiento_uniforme(
         padre1: Cromosoma, padre2: Cromosoma, prob: float
     ) -> Tuple[Cromosoma, Cromosoma]:
         if random.random() > prob or len(padre1) < 3:
             return deepcopy(padre1), deepcopy(padre2)
 
-        n      = len(padre1)
-        inicio = random.randint(0, n - 2)
-        fin    = random.randint(inicio + 1, n - 1)
+        n = len(padre1)
 
         def _hijo(p1: Cromosoma, p2: Cromosoma) -> Cromosoma:
-            segmento  = set(p1[inicio : fin + 1])
-            hijo      = [None] * n
-            hijo[inicio : fin + 1] = p1[inicio : fin + 1]
-            restantes = [x for x in p2 if x not in segmento]
-            pos = 0
-            for k in range(n):
-                if hijo[k] is None:
-                    hijo[k] = restantes[pos]
-                    pos += 1
+            hijo      = [-1] * n
+            usados:   set[int] = set()
+            pendientes: list[int] = []
+
+            # Paso 1: heredar posición→valor de p1 o p2 al azar
+            for i in range(n):
+                val = p1[i] if random.random() < 0.5 else p2[i]
+                if val not in usados:
+                    hijo[i] = val
+                    usados.add(val)
+                else:
+                    pendientes.append(i)
+
+            if not pendientes:
+                return hijo
+
+            # Paso 2: cubrir posiciones duplicadas con ranuras aún sin usar.
+            # Fuente primaria: p2 (preserva su estructura lo más posible).
+            disponibles = [v for v in p2 if v not in usados]
+            # Fallback 1: completar con valores de p1 no usados aún.
+            if len(disponibles) < len(pendientes):
+                disponibles += [v for v in p1
+                                if v not in usados and v not in disponibles]
+            # Fallback 2 (seguridad): si los dos padres juntos no alcanzan
+            # (caso extremo con cromosomas corruptos), tomar cualquier ranura
+            # del universo [0, num_ranuras) que no esté asignada todavía.
+            if len(disponibles) < len(pendientes):
+                disp_set = set(disponibles)
+                todo_p = set(p1) | set(p2)
+                disponibles += [v for v in todo_p
+                                if v not in usados and v not in disp_set]
+
+            for idx, pos in enumerate(pendientes):
+                if idx < len(disponibles):
+                    hijo[pos] = disponibles[idx]
+                else:
+                    # Último recurso: swap con otra posición ya asignada
+                    # para mantener la permutación válida (sin repetidos).
+                    swap_pos = next(
+                        (j for j in range(n) if hijo[j] != -1 and j not in pendientes),
+                        None,
+                    )
+                    if swap_pos is not None:
+                        hijo[pos], hijo[swap_pos] = hijo[swap_pos], hijo[pos]
+                    else:
+                        hijo[pos] = usados.pop()  # caso absolutamente extremo
+
             return hijo
 
         return _hijo(padre1, padre2), _hijo(padre2, padre1)
@@ -951,7 +1013,8 @@ class AlgoritmoGenetico:
         """
         if executor is None:
             return [self.calcular_fitness(c) for c in poblacion]
-        chunksize = max(1, len(poblacion) // (executor._max_workers * 2))
+        n_workers = min(4, max(1, (os.cpu_count() or 1) - 1))
+        chunksize = max(1, len(poblacion) // (n_workers * 2))
         try:
             return list(executor.map(_worker_fitness, poblacion, chunksize=chunksize))
         except Exception:
@@ -982,8 +1045,15 @@ class AlgoritmoGenetico:
             random.seed(semilla)
 
         # ── Configurar evaluación paralela ────────────────────────────────────
+        # En Windows (IIS), multiprocessing usa el método 'spawn', que serializa
+        # el objeto AG y levanta subprocesos nuevos — propenso a fallos con
+        # HttpPlatformHandler. Se deshabilita en Windows y se usa modo secuencial.
         n_workers  = min(4, max(1, (os.cpu_count() or 1) - 1))
-        use_par    = n_workers > 1 and self.num_sesiones >= 20
+        use_par    = (
+            platform.system() != "Windows"
+            and n_workers > 1
+            and self.num_sesiones >= 20
+        )
         executor: Optional[ProcessPoolExecutor] = (
             ProcessPoolExecutor(
                 max_workers=n_workers,
@@ -1037,20 +1107,35 @@ class AlgoritmoGenetico:
                     razon = ""
 
                 # ── Top-3 individuos ──────────────────────────────────────────
+                # En generaciones intermedias solo se guardan las métricas básicas
+                # (rank, fitness, conflictos) para no decodificar 3 horarios completos
+                # en cada ciclo.  En la generación final se añade el horario decodificado
+                # y el detalle completo de conflictos de cada individuo.
                 top_n = min(3, len(poblacion))
-                top_individuos = []
+                top_individuos: list[dict] = []
                 for rank, idx in enumerate(indices_ord[:top_n], start=1):
-                    top_individuos.append({
-                        "rank":       rank,
-                        "fitness":    round(fitnesses[idx], 2),
-                        "conflictos": conflictos_[idx],
-                        "horario":    [a.to_dict() for a in self.decodificar(poblacion[idx])],
-                    })
+                    entry: dict = {
+                        "rank":               rank,
+                        "fitness":            round(fitnesses[idx], 2),
+                        "conflictos":         conflictos_[idx],
+                        "horario":            [],
+                        "conflictos_detalle": [],
+                    }
+                    if es_ultima:
+                        entry["horario"] = [
+                            a.to_dict() for a in self.decodificar(poblacion[idx])
+                        ]
+                        entry["conflictos_detalle"] = (
+                            self.detectar_conflictos_detalle(poblacion[idx])
+                        )
+                    top_individuos.append(entry)
 
-                # ── Detalle de conflictos (solo en la generación final) ───────
+                # ── Detalle de conflictos del mejor (reutiliza rank-1) ────────
+                # En la generación final rank-1 == mejor_idx, así que evitamos
+                # un segundo recálculo tomando directamente lo ya computado.
                 detalle: list[dict] = []
                 if es_ultima:
-                    detalle = self.detectar_conflictos_detalle(poblacion[mejor_idx])
+                    detalle = top_individuos[0]["conflictos_detalle"] if top_individuos else []
 
                 yield ResultadoGeneracion(
                     numero=gen,
@@ -1073,9 +1158,10 @@ class AlgoritmoGenetico:
                 # Permitir múltiples reinicios evita que el AG quede atrapado
                 # definitivamente en un óptimo local tras el primer estancamiento.
                 if gen_sin_mejora >= reinicio_umbral and reinicios < MAX_REINICIOS:
-                    reinicios     += 1
-                    gen_sin_mejora = 0
-                    n_conservar    = max(self.params.num_elite, len(poblacion) // 4)
+                    reinicios          += 1
+                    gen_sin_mejora      = 0
+                    mejor_fitness_hist  = mejor_fitness   # evita falso "estancamiento" post-reinicio
+                    n_conservar         = max(self.params.num_elite, len(poblacion) // 4)
                     elites         = [deepcopy(poblacion[i]) for i in indices_ord[:n_conservar]]
                     n_nuevos       = self.params.tam_poblacion - n_conservar
                     nuevos = [
@@ -1092,11 +1178,11 @@ class AlgoritmoGenetico:
                 while len(nueva_pobl) < self.params.tam_poblacion:
                     p1 = self._seleccion_torneo(poblacion, fitnesses)
                     p2 = self._seleccion_torneo(poblacion, fitnesses)
-                    h1, h2 = self._cruzamiento_ox(p1, p2, self.params.prob_cruzamiento)
+                    h1, h2 = self._cruzamiento_uniforme(p1, p2, self.params.prob_cruzamiento)
                     h1 = self._mutar(h1, self.params.prob_mutacion)
                     h2 = self._mutar(h2, self.params.prob_mutacion)
                     # Reparar solapamientos y violaciones de jornada introducidos
-                    # por OX (que mezcla correspondencias sesión→ranura) y por
+                    # por UX (que puede heredar duplicados de ambos padres) y por
                     # los operadores de mutación (swap/inversión/inserción).
                     h1 = self._reparar(h1)
                     h2 = self._reparar(h2)

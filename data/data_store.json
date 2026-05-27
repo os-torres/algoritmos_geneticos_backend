@@ -10,7 +10,7 @@
         3,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -23,7 +23,7 @@
         2,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -36,7 +36,7 @@
         2,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -49,7 +49,7 @@
         2,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -62,7 +62,7 @@
         3,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -75,7 +75,7 @@
         2,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -88,7 +88,7 @@
         2,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -101,7 +101,7 @@
         3,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -114,7 +114,7 @@
         2,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -127,7 +127,7 @@
         2,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -140,7 +140,7 @@
         2,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -153,7 +153,7 @@
         3,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -166,7 +166,7 @@
         2,
         2
       ],
-      "num_alumnos": 30,
+      "num_alumnos": 35,
       "requiere_laboratorio": false
     },
     {
@@ -179,7 +179,1151 @@
         2,
         2
       ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 15,
+      "nombre": "Constitución y Democracia",
+      "semestre": 2,
+      "grupo": "A",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 16,
+      "nombre": "Matemáticas II",
+      "semestre": 2,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        3,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 17,
+      "nombre": "Física II",
+      "semestre": 2,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 18,
+      "nombre": "Química I",
+      "semestre": 2,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 19,
+      "nombre": "Lógica y Algoritmos II",
+      "semestre": 2,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        3,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 20,
+      "nombre": "Teoría General de Sistemas",
+      "semestre": 2,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 21,
+      "nombre": "Constitución y Democracia",
+      "semestre": 2,
+      "grupo": "B",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 22,
+      "nombre": "Matemáticas II",
+      "semestre": 2,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        3,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 23,
+      "nombre": "Física II",
+      "semestre": 2,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 24,
+      "nombre": "Química I",
+      "semestre": 2,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 25,
+      "nombre": "Lógica y Algoritmos II",
+      "semestre": 2,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        3,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 26,
+      "nombre": "Teoría General de Sistemas",
+      "semestre": 2,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 35,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 27,
+      "nombre": "Idioma Extranjero I",
+      "semestre": 3,
+      "grupo": "A",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 33,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 28,
+      "nombre": "Álgebra Lineal",
+      "semestre": 3,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        3,
+        2
+      ],
+      "num_alumnos": 33,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 29,
+      "nombre": "Matemáticas Discreta",
+      "semestre": 3,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        3,
+        2
+      ],
+      "num_alumnos": 33,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 30,
+      "nombre": "Análisis de Sistemas",
+      "semestre": 3,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 33,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 31,
+      "nombre": "Estructuras de Datos I",
+      "semestre": 3,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 33,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 32,
+      "nombre": "Idioma Extranjero I",
+      "semestre": 3,
+      "grupo": "B",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 33,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 33,
+      "nombre": "Álgebra Lineal",
+      "semestre": 3,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        3,
+        2
+      ],
+      "num_alumnos": 33,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 34,
+      "nombre": "Matemáticas Discreta",
+      "semestre": 3,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        3,
+        2
+      ],
+      "num_alumnos": 33,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 35,
+      "nombre": "Análisis de Sistemas",
+      "semestre": 3,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 33,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 36,
+      "nombre": "Estructuras de Datos I",
+      "semestre": 3,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 33,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 37,
+      "nombre": "Ecuaciones Diferenciales",
+      "semestre": 4,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
       "num_alumnos": 30,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 38,
+      "nombre": "Estadística para Ingeniería",
+      "semestre": 4,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 30,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 39,
+      "nombre": "Ingeniería de Software I",
+      "semestre": 4,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 30,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 40,
+      "nombre": "Sistemas Operativos",
+      "semestre": 4,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 30,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 41,
+      "nombre": "Estructuras de Datos II",
+      "semestre": 4,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 30,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 42,
+      "nombre": "Ecuaciones Diferenciales",
+      "semestre": 4,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 30,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 43,
+      "nombre": "Estadística para Ingeniería",
+      "semestre": 4,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 30,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 44,
+      "nombre": "Ingeniería de Software I",
+      "semestre": 4,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 30,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 45,
+      "nombre": "Sistemas Operativos",
+      "semestre": 4,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 30,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 46,
+      "nombre": "Estructuras de Datos II",
+      "semestre": 4,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 30,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 47,
+      "nombre": "Idioma Extranjero II",
+      "semestre": 5,
+      "grupo": "A",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 28,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 48,
+      "nombre": "Métodos Numéricos",
+      "semestre": 5,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 28,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 49,
+      "nombre": "Ingeniería de Software II",
+      "semestre": 5,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 28,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 50,
+      "nombre": "Programación Web",
+      "semestre": 5,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 28,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 51,
+      "nombre": "Diseño de Base de Datos",
+      "semestre": 5,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 28,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 52,
+      "nombre": "Idioma Extranjero II",
+      "semestre": 5,
+      "grupo": "B",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 28,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 53,
+      "nombre": "Métodos Numéricos",
+      "semestre": 5,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 28,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 54,
+      "nombre": "Ingeniería de Software II",
+      "semestre": 5,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 28,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 55,
+      "nombre": "Programación Web",
+      "semestre": 5,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 28,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 56,
+      "nombre": "Diseño de Base de Datos",
+      "semestre": 5,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 28,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 57,
+      "nombre": "Filosofía e Historia de la Ciencia",
+      "semestre": 6,
+      "grupo": "A",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 26,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 58,
+      "nombre": "Modelos Determinísticos",
+      "semestre": 6,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 26,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 59,
+      "nombre": "Ingeniería de Software III",
+      "semestre": 6,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 26,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 60,
+      "nombre": "Programación Móvil",
+      "semestre": 6,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 26,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 61,
+      "nombre": "Redes Informáticas I",
+      "semestre": 6,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 26,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 62,
+      "nombre": "Filosofía e Historia de la Ciencia",
+      "semestre": 6,
+      "grupo": "B",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 26,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 63,
+      "nombre": "Modelos Determinísticos",
+      "semestre": 6,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 26,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 64,
+      "nombre": "Ingeniería de Software III",
+      "semestre": 6,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 26,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 65,
+      "nombre": "Programación Móvil",
+      "semestre": 6,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 26,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 66,
+      "nombre": "Redes Informáticas I",
+      "semestre": 6,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 26,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 67,
+      "nombre": "Metodología de la Investigación I",
+      "semestre": 7,
+      "grupo": "A",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 24,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 68,
+      "nombre": "Proyectos Software",
+      "semestre": 7,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 24,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 69,
+      "nombre": "Inteligencia Computacional I",
+      "semestre": 7,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 24,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 70,
+      "nombre": "Redes Informáticas II",
+      "semestre": 7,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 24,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 71,
+      "nombre": "Administración de Base de Datos",
+      "semestre": 7,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 24,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 72,
+      "nombre": "Metodología de la Investigación I",
+      "semestre": 7,
+      "grupo": "B",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 24,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 73,
+      "nombre": "Proyectos Software",
+      "semestre": 7,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 24,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 74,
+      "nombre": "Inteligencia Computacional I",
+      "semestre": 7,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 24,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 75,
+      "nombre": "Redes Informáticas II",
+      "semestre": 7,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 24,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 76,
+      "nombre": "Administración de Base de Datos",
+      "semestre": 7,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 24,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 77,
+      "nombre": "Desarrollo Humano",
+      "semestre": 8,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 78,
+      "nombre": "Ética",
+      "semestre": 8,
+      "grupo": "A",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 79,
+      "nombre": "Metodología de la Investigación II",
+      "semestre": 8,
+      "grupo": "A",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 80,
+      "nombre": "Planeación Estratégica de SI",
+      "semestre": 8,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 81,
+      "nombre": "Inteligencia Computacional II",
+      "semestre": 8,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 82,
+      "nombre": "Taller de Emprendimiento e Innovación",
+      "semestre": 8,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 83,
+      "nombre": "Desarrollo Humano",
+      "semestre": 8,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 84,
+      "nombre": "Ética",
+      "semestre": 8,
+      "grupo": "B",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 85,
+      "nombre": "Metodología de la Investigación II",
+      "semestre": 8,
+      "grupo": "B",
+      "creditos": 2,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 86,
+      "nombre": "Planeación Estratégica de SI",
+      "semestre": 8,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 87,
+      "nombre": "Inteligencia Computacional II",
+      "semestre": 8,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 88,
+      "nombre": "Taller de Emprendimiento e Innovación",
+      "semestre": 8,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 22,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 89,
+      "nombre": "Universidad Región y Medio Ambiente",
+      "semestre": 9,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 20,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 90,
+      "nombre": "Gestión Tecnológica",
+      "semestre": 9,
+      "grupo": "A",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 20,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 91,
+      "nombre": "Taller de Escritura Científica",
+      "semestre": 9,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 20,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 92,
+      "nombre": "Electiva I",
+      "semestre": 9,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 20,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 93,
+      "nombre": "Electiva II",
+      "semestre": 9,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 20,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 94,
+      "nombre": "Universidad Región y Medio Ambiente",
+      "semestre": 9,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 20,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 95,
+      "nombre": "Gestión Tecnológica",
+      "semestre": 9,
+      "grupo": "B",
+      "creditos": 3,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 20,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 96,
+      "nombre": "Taller de Escritura Científica",
+      "semestre": 9,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 20,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 97,
+      "nombre": "Electiva I",
+      "semestre": 9,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 20,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 98,
+      "nombre": "Electiva II",
+      "semestre": 9,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 20,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 99,
+      "nombre": "Electiva III",
+      "semestre": 10,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 18,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 100,
+      "nombre": "Electiva IV",
+      "semestre": 10,
+      "grupo": "A",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 18,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 101,
+      "nombre": "Electiva III",
+      "semestre": 10,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 18,
+      "requiere_laboratorio": false
+    },
+    {
+      "id": 102,
+      "nombre": "Electiva IV",
+      "semestre": 10,
+      "grupo": "B",
+      "creditos": 4,
+      "bloques": [
+        2,
+        2
+      ],
+      "num_alumnos": 18,
       "requiere_laboratorio": false
     }
   ],
@@ -189,7 +1333,17 @@
       "nombre": "Dr. Matemáticas",
       "materias_ids": [
         1,
-        8
+        8,
+        16,
+        22,
+        28,
+        33,
+        37,
+        42,
+        48,
+        53,
+        58,
+        63
       ],
       "franjas_preferidas": [
         1,
@@ -222,10 +1376,20 @@
     },
     {
       "id": 2,
-      "nombre": "Dra. Física",
+      "nombre": "Dra. Ciencias Básicas",
       "materias_ids": [
         2,
-        9
+        9,
+        17,
+        23,
+        3,
+        10,
+        18,
+        24,
+        29,
+        34,
+        38,
+        43
       ],
       "franjas_preferidas": [
         1,
@@ -258,10 +1422,179 @@
     },
     {
       "id": 3,
-      "nombre": "Dra. Biología",
+      "nombre": "Prof. Programación",
       "materias_ids": [
+        5,
+        12,
+        19,
+        25,
+        30,
+        35,
+        31,
+        36,
+        41,
+        46,
+        40,
+        45
+      ],
+      "franjas_preferidas": [
         3,
-        10
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "franjas_bloqueadas": []
+    },
+    {
+      "id": 4,
+      "nombre": "Prof. Ing. Software",
+      "materias_ids": [
+        4,
+        11,
+        20,
+        26,
+        39,
+        44,
+        49,
+        54,
+        59,
+        64,
+        68,
+        73,
+        80,
+        86
+      ],
+      "franjas_preferidas": [
+        1,
+        2,
+        3,
+        9,
+        10,
+        11,
+        17,
+        18,
+        19,
+        25,
+        26,
+        27,
+        33,
+        34,
+        35
+      ],
+      "franjas_bloqueadas": []
+    },
+    {
+      "id": 5,
+      "nombre": "Prof. BD y Redes",
+      "materias_ids": [
+        51,
+        56,
+        71,
+        76,
+        61,
+        66,
+        70,
+        75
+      ],
+      "franjas_preferidas": [
+        6,
+        7,
+        8,
+        14,
+        15,
+        16,
+        22,
+        23,
+        24,
+        30,
+        31,
+        32,
+        38,
+        39,
+        40
+      ],
+      "franjas_bloqueadas": []
+    },
+    {
+      "id": 6,
+      "nombre": "Prof. Web y Móvil",
+      "materias_ids": [
+        50,
+        55,
+        60,
+        65,
+        82,
+        88,
+        90,
+        95,
+        92,
+        97,
+        93,
+        98,
+        99,
+        101,
+        100,
+        102
+      ],
+      "franjas_preferidas": [
+        6,
+        7,
+        8,
+        14,
+        15,
+        16,
+        22,
+        23,
+        24,
+        30,
+        31,
+        32,
+        38,
+        39,
+        40
+      ],
+      "franjas_bloqueadas": []
+    },
+    {
+      "id": 7,
+      "nombre": "Prof. Investigación",
+      "materias_ids": [
+        67,
+        72,
+        79,
+        85,
+        91,
+        96,
+        69,
+        74,
+        81,
+        87
       ],
       "franjas_preferidas": [
         1,
@@ -293,114 +1626,27 @@
       "franjas_bloqueadas": []
     },
     {
-      "id": 4,
-      "nombre": "Prof. Programación",
+      "id": 8,
+      "nombre": "Prof. Humanidades",
       "materias_ids": [
-        5,
-        12
-      ],
-      "franjas_preferidas": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        9,
-        10,
-        11,
-        12,
+        6,
         13,
-        17,
-        18,
-        19,
-        20,
+        7,
+        14,
+        15,
         21,
-        25,
-        26,
         27,
-        28,
-        29,
-        33,
-        34,
-        35,
-        36,
-        37,
-        6,
-        7,
-        8,
-        14,
-        15,
-        16,
-        22,
-        23,
-        24,
-        30,
-        31,
         32,
-        38,
-        39,
-        40
-      ],
-      "franjas_bloqueadas": []
-    },
-    {
-      "id": 5,
-      "nombre": "Prof. Ing. Software",
-      "materias_ids": [
-        4,
-        11
-      ],
-      "franjas_preferidas": [
-        6,
-        7,
-        8,
-        14,
-        15,
-        16,
-        22,
-        23,
-        24,
-        30,
-        31,
-        32,
-        38,
-        39,
-        40
-      ],
-      "franjas_bloqueadas": []
-    },
-    {
-      "id": 6,
-      "nombre": "Prof. Comunicación",
-      "materias_ids": [
-        6,
-        13
-      ],
-      "franjas_preferidas": [
-        6,
-        7,
-        8,
-        14,
-        15,
-        16,
-        22,
-        23,
-        24,
-        30,
-        31,
-        32,
-        38,
-        39,
-        40
-      ],
-      "franjas_bloqueadas": []
-    },
-    {
-      "id": 7,
-      "nombre": "Prof. Deportes",
-      "materias_ids": [
-        7,
-        14
+        47,
+        52,
+        57,
+        62,
+        77,
+        83,
+        78,
+        84,
+        89,
+        94
       ],
       "franjas_preferidas": [
         6,
@@ -455,9 +1701,45 @@
     },
     {
       "id": 6,
-      "nombre": "Lab. Sistemas",
+      "nombre": "Aula 203",
+      "capacidad": 40,
+      "tipo": "aula"
+    },
+    {
+      "id": 7,
+      "nombre": "Aula 301",
+      "capacidad": 45,
+      "tipo": "aula"
+    },
+    {
+      "id": 8,
+      "nombre": "Aula 302",
+      "capacidad": 45,
+      "tipo": "aula"
+    },
+    {
+      "id": 9,
+      "nombre": "Lab. Informática 1",
       "capacidad": 30,
       "tipo": "laboratorio"
+    },
+    {
+      "id": 10,
+      "nombre": "Lab. Informática 2",
+      "capacidad": 30,
+      "tipo": "laboratorio"
+    },
+    {
+      "id": 11,
+      "nombre": "Salón Múltiple 1",
+      "capacidad": 60,
+      "tipo": "auditorio"
+    },
+    {
+      "id": 12,
+      "nombre": "Salón Múltiple 2",
+      "capacidad": 60,
+      "tipo": "auditorio"
     }
   ],
   "franjas": [

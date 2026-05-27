@@ -185,10 +185,10 @@ class DataStore:
                 min_salones    = max(4, math.ceil(total_sesiones / franjas_count) + 2)
                 next_id        = max((s.id for s in self._salones), default=0) + 1
                 while len(self._salones) < min_salones:
-                    idx    = len(self._salones)
-                    nombre = (_NOMBRES_AUTO[idx]
-                              if idx < len(_NOMBRES_AUTO)
-                              else f"Salón {next_id}")
+                    salon_idx = len(self._salones)
+                    nombre    = (_NOMBRES_AUTO[salon_idx]
+                                 if salon_idx < len(_NOMBRES_AUTO)
+                                 else f"Salón {next_id}")
                     self._salones.append(Salon(next_id, nombre, 35))
                     next_id  += 1
                     salones_auto += 1
@@ -210,12 +210,22 @@ class DataStore:
     # ------------------------------------------------------------------
 
     def _load(self) -> None:
-        with open(STORE_FILE, encoding="utf-8") as fh:
-            raw = json.load(fh)
-        self._materias   = [Materia(**d)        for d in raw.get("materias",   [])]
-        self._profesores = [Profesor(**d)       for d in raw.get("profesores", [])]
-        self._salones    = [Salon(**d)          for d in raw.get("salones",    [])]
-        self._franjas    = [FranjaHoraria(**d)  for d in raw.get("franjas",    [])]
+        try:
+            with open(STORE_FILE, encoding="utf-8") as fh:
+                raw = json.load(fh)
+            self._materias   = [Materia(**d)        for d in raw.get("materias",   [])]
+            self._profesores = [Profesor(**d)       for d in raw.get("profesores", [])]
+            self._salones    = [Salon(**d)          for d in raw.get("salones",    [])]
+            self._franjas    = [FranjaHoraria(**d)  for d in raw.get("franjas",    [])]
+        except (json.JSONDecodeError, TypeError, KeyError) as exc:
+            # Archivo corrupto o esquema incompatible → restaurar datos de muestra
+            # para que el servidor arranque en lugar de crashear.
+            import logging
+            logging.warning(
+                "data_store.json corrupto o incompatible (%s). "
+                "Se restauran los datos de muestra.", exc
+            )
+            self._seed_defaults()
 
     def _save(self) -> None:
         payload = {
@@ -247,9 +257,12 @@ class DataStore:
         for mat in materias_filtradas:
             profesor = next(
                 (p for p in self._profesores if mat.id in p.materias_ids),
-                self._profesores[0] if self._profesores else None,
+                None,
             )
             if profesor is None:
+                # Materia sin profesor asignado → se omite de la optimización.
+                # El endpoint /api/datos expone esto a través del resumen; el
+                # usuario debe asignar un profesor antes de optimizar.
                 continue
             for duracion in mat.bloques:
                 sesiones.append(SesionClase(
