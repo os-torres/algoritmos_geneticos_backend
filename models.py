@@ -7,9 +7,11 @@ class Materia:
     id: int
     nombre: str
     semestre: int           # 1-10
-    grupo: str              # Grupo estudiantil: "A", "B", "C"
+    grupo: str              # "A", "B", "C"…
     creditos: int
-    bloques: List[int]      # Horas por sesión, p.ej. [3, 2] = 5h/sem en 2 días distintos
+    bloques: List[int]      # Horas por sesión, p.ej. [3, 2] = 5h/sem en 2 sesiones
+    num_alumnos: int = 30           # Alumnos estimados (valida capacidad del salón)
+    requiere_laboratorio: bool = False  # True → debe asignarse a un salón tipo "laboratorio"
 
     @property
     def sesiones_por_semana(self) -> int:
@@ -25,7 +27,8 @@ class Profesor:
     id: int
     nombre: str
     materias_ids: List[int]
-    franjas_preferidas: List[int]   # IDs de franjas horarias preferidas
+    franjas_preferidas: List[int]       # IDs de franjas preferidas (bonificación en fitness)
+    franjas_bloqueadas: List[int] = field(default_factory=list)  # IDs donde NO puede dictar (restricción dura)
 
 
 @dataclass
@@ -33,16 +36,17 @@ class Salon:
     id: int
     nombre: str
     capacidad: int
+    tipo: str = "aula"      # "aula" | "laboratorio" | "auditorio"
 
 
 @dataclass
 class FranjaHoraria:
     id: int
     dia: str
-    hora_inicio: str
-    hora_fin: str
+    hora_inicio: str    # "HH:MM"
+    hora_fin: str       # "HH:MM"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.dia} {self.hora_inicio}-{self.hora_fin}"
 
 
@@ -54,9 +58,11 @@ class SesionClase:
     profesor_id: int
     grupo: str
     semestre: int = 1
-    duracion_horas: int = 2     # Horas que dura esta sesión (p.ej. 3 o 2)
+    duracion_horas: int = 2
     nombre_materia: str = ""
     nombre_profesor: str = ""
+    num_alumnos: int = 30           # Propagado desde Materia
+    requiere_laboratorio: bool = False  # Propagado desde Materia
 
 
 @dataclass
@@ -67,25 +73,25 @@ class Asignacion:
     salon: Salon
 
     def to_dict(self) -> dict:
-        # Calcular hora_fin REAL desde hora_inicio + duración de la sesión.
-        # No se usa franja.hora_fin porque la franja solo marca la hora de inicio
-        # y puede ser más corta o más larga que la sesión asignada.
         h, m = map(int, self.franja.hora_inicio.split(':'))
-        total_min    = h * 60 + m + self.sesion.duracion_horas * 60
+        total_min = h * 60 + m + self.sesion.duracion_horas * 60
         hora_fin_real = f"{total_min // 60:02d}:{total_min % 60:02d}"
         return {
-            "sesion_id":      self.sesion.id,
-            "materia_id":     self.sesion.materia_id,
-            "materia":        self.sesion.nombre_materia,
-            "profesor":       self.sesion.nombre_profesor,
-            "grupo":          self.sesion.grupo,
-            "semestre":       self.sesion.semestre,
-            "duracion_horas": self.sesion.duracion_horas,
-            "dia":            self.franja.dia,
-            "hora_inicio":    self.franja.hora_inicio,
-            "hora_fin":       hora_fin_real,
-            "salon":          self.salon.nombre,
-            "salon_capacidad":self.salon.capacidad,
+            "sesion_id":            self.sesion.id,
+            "materia_id":           self.sesion.materia_id,
+            "materia":              self.sesion.nombre_materia,
+            "profesor":             self.sesion.nombre_profesor,
+            "grupo":                self.sesion.grupo,
+            "semestre":             self.sesion.semestre,
+            "duracion_horas":       self.sesion.duracion_horas,
+            "num_alumnos":          self.sesion.num_alumnos,
+            "requiere_laboratorio": self.sesion.requiere_laboratorio,
+            "dia":                  self.franja.dia,
+            "hora_inicio":          self.franja.hora_inicio,
+            "hora_fin":             hora_fin_real,
+            "salon":                self.salon.nombre,
+            "salon_capacidad":      self.salon.capacidad,
+            "salon_tipo":           self.salon.tipo,
         }
 
 
@@ -97,24 +103,21 @@ class ResultadoGeneracion:
     peor_fitness: float
     conflictos_mejor: int
     mejor_horario: List[dict] = field(default_factory=list)
-    # Top-N individuos de la generación: [{rank, fitness, conflictos, horario}]
     top_individuos: List[dict] = field(default_factory=list)
-    # Descripción detallada de cada conflicto del mejor individuo
     conflictos_detalle: List[dict] = field(default_factory=list)
-    # Razón de parada: "" (en curso) | "optimo_encontrado" | "estancamiento" | "generaciones_completadas"
     razon_parada: str = ""
 
     def to_dict(self) -> dict:
         return {
-            "numero":              self.numero,
-            "mejor_fitness":       round(self.mejor_fitness, 2),
-            "promedio_fitness":    round(self.promedio_fitness, 2),
-            "peor_fitness":        round(self.peor_fitness, 2),
-            "conflictos_mejor":    self.conflictos_mejor,
-            "mejor_horario":       self.mejor_horario,
-            "top_individuos":      self.top_individuos,
-            "conflictos_detalle":  self.conflictos_detalle,
-            "razon_parada":        self.razon_parada,
+            "numero":             self.numero,
+            "mejor_fitness":      round(self.mejor_fitness, 2),
+            "promedio_fitness":   round(self.promedio_fitness, 2),
+            "peor_fitness":       round(self.peor_fitness, 2),
+            "conflictos_mejor":   self.conflictos_mejor,
+            "mejor_horario":      self.mejor_horario,
+            "top_individuos":     self.top_individuos,
+            "conflictos_detalle": self.conflictos_detalle,
+            "razon_parada":       self.razon_parada,
         }
 
 
@@ -126,5 +129,4 @@ class ParametrosAG:
     prob_mutacion:    float = 0.10
     num_elite:        int   = 2
     tam_torneo:       int   = 5
-    # Generaciones consecutivas sin mejora antes de detener el AG anticipadamente
     paciencia:        int   = 30

@@ -1,16 +1,17 @@
 """
-API REST + WebSocket — Optimizador de Horarios con Algoritmo Genético
+API REST — Optimizador de Horarios con Algoritmo Genético
 Universidad de la Amazonia · Facultad de Ingeniería · Ingeniería de Sistemas
 """
 
-import asyncio
-import json
+import datetime
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel, Field
 
+from config import CORS_ORIGINS, IS_PRODUCTION, ROOT_PATH
 from genetic_algorithm import crear_ag_desde_store
 from models import ParametrosAG
 from storage import store
@@ -23,14 +24,65 @@ app = FastAPI(
     title="Horario Genético API",
     description="Optimización de horarios universitarios con algoritmos genéticos.",
     version="1.0.0",
+    # En producción se deshabilita Swagger/ReDoc para no exponer la documentación
+    docs_url=None if IS_PRODUCTION else "/docs",
+    redoc_url=None if IS_PRODUCTION else "/redoc",
+    openapi_url=None if IS_PRODUCTION else "/openapi.json",
 )
+
+# ---------------------------------------------------------------------------
+# Middleware: StripPrefix (solo cuando IIS agrega un prefijo de ruta)
+# ---------------------------------------------------------------------------
+# IIS HttpPlatformHandler sirve la app bajo /HorarioGenetico, pero uvicorn
+# recibe las peticiones con ese prefijo incluido. Este middleware lo elimina
+# para que las rutas de FastAPI (/api/...) coincidan correctamente.
+#
+# IMPORTANTE: se implementa como middleware ASGI puro (no BaseHTTPMiddleware)
+# porque BaseHTTPMiddleware solo intercepta HTTP y no WebSocket (por si en el
+# futuro se agrega algún endpoint ws://).
+
+if ROOT_PATH:
+    _prefix_bytes = ROOT_PATH.encode()
+
+    class StripPrefixMiddleware:
+        def __init__(self, app):
+            self.app = app
+
+        async def __call__(self, scope, receive, send):
+            if scope.get("type") in ("http", "websocket"):
+                path: str = scope.get("path", "")
+                if path.startswith(ROOT_PATH):
+                    stripped = path[len(ROOT_PATH):]
+                    scope["path"] = stripped if stripped.startswith("/") else "/" + stripped
+                    # raw_path es la ruta binaria usada por algunos routers internos
+                    raw: bytes = scope.get("raw_path", b"")
+                    if raw.startswith(_prefix_bytes):
+                        stripped_raw = raw[len(_prefix_bytes):]
+                        scope["raw_path"] = (
+                            stripped_raw if stripped_raw.startswith(b"/")
+                            else b"/" + stripped_raw
+                        )
+            await self.app(scope, receive, send)
+
+    app.add_middleware(StripPrefixMiddleware)
+
+# ---------------------------------------------------------------------------
+# Middleware: CORS
+# ---------------------------------------------------------------------------
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ---------------------------------------------------------------------------
+# Middleware: GZip (comprime respuestas > 1 KB)
+# ---------------------------------------------------------------------------
+
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 
 # ---------------------------------------------------------------------------
@@ -38,36 +90,44 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 
 class MateriaIn(BaseModel):
-    nombre:   str      = Field(..., min_length=2, max_length=100)
-    semestre: int      = Field(..., ge=1, le=10)
-    grupo:    str      = Field(..., min_length=1, max_length=10)
-    creditos: int      = Field(..., ge=1, le=10)
-    bloques:  list[int] = Field(..., min_length=1)
+    nombre:               str       = Field(..., min_length=2, max_length=100)
+    semestre:             int       = Field(..., ge=1, le=10)
+    grupo:                str       = Field(..., min_length=1, max_length=10)
+    creditos:             int       = Field(..., ge=1, le=10)
+    bloques:              list[int] = Field(..., min_length=1)
+    num_alumnos:          int       = Field(default=30, ge=1, le=500)
+    requiere_laboratorio: bool      = False
 
 class MateriaUpdate(BaseModel):
-    nombre:   str        | None = Field(None, min_length=2, max_length=100)
-    semestre: int        | None = Field(None, ge=1, le=10)
-    grupo:    str        | None = Field(None, min_length=1, max_length=10)
-    creditos: int        | None = Field(None, ge=1, le=10)
-    bloques:  list[int]  | None = None
+    nombre:               str       | None = Field(None, min_length=2, max_length=100)
+    semestre:             int       | None = Field(None, ge=1, le=10)
+    grupo:                str       | None = Field(None, min_length=1, max_length=10)
+    creditos:             int       | None = Field(None, ge=1, le=10)
+    bloques:              list[int] | None = None
+    num_alumnos:          int       | None = Field(None, ge=1, le=500)
+    requiere_laboratorio: bool      | None = None
 
 class ProfesorIn(BaseModel):
-    nombre:             str        = Field(..., min_length=2, max_length=100)
-    materias_ids:       list[int]  = Field(default_factory=list)
-    franjas_preferidas: list[int]  = Field(default_factory=list)
+    nombre:             str       = Field(..., min_length=2, max_length=100)
+    materias_ids:       list[int] = Field(default_factory=list)
+    franjas_preferidas: list[int] = Field(default_factory=list)
+    franjas_bloqueadas: list[int] = Field(default_factory=list)
 
 class ProfesorUpdate(BaseModel):
-    nombre:             str        | None = Field(None, min_length=2, max_length=100)
-    materias_ids:       list[int]  | None = None
-    franjas_preferidas: list[int]  | None = None
+    nombre:             str       | None = Field(None, min_length=2, max_length=100)
+    materias_ids:       list[int] | None = None
+    franjas_preferidas: list[int] | None = None
+    franjas_bloqueadas: list[int] | None = None
 
 class SalonIn(BaseModel):
     nombre:    str = Field(..., min_length=2, max_length=100)
     capacidad: int = Field(..., ge=1, le=1000)
+    tipo:      str = Field(default="aula", pattern=r"^(aula|laboratorio|auditorio)$")
 
 class SalonUpdate(BaseModel):
     nombre:    str | None = Field(None, min_length=2, max_length=100)
     capacidad: int | None = Field(None, ge=1, le=1000)
+    tipo:      str | None = Field(None, pattern=r"^(aula|laboratorio|auditorio)$")
 
 class FranjaIn(BaseModel):
     dia:         str = Field(..., description="Ej: Lunes, Martes…")
@@ -214,7 +274,10 @@ async def listar_materias():
 
 @app.post("/api/materias", summary="Crear materia", status_code=201)
 async def crear_materia(body: MateriaIn):
-    mat = store.add_materia(body.nombre, body.semestre, body.grupo, body.creditos, body.bloques)
+    mat = store.add_materia(
+        body.nombre, body.semestre, body.grupo, body.creditos, body.bloques,
+        num_alumnos=body.num_alumnos, requiere_laboratorio=body.requiere_laboratorio,
+    )
     return _m(mat)
 
 
@@ -245,7 +308,10 @@ async def listar_profesores():
 
 @app.post("/api/profesores", summary="Crear profesor", status_code=201)
 async def crear_profesor(body: ProfesorIn):
-    prof = store.add_profesor(body.nombre, body.materias_ids, body.franjas_preferidas)
+    prof = store.add_profesor(
+        body.nombre, body.materias_ids, body.franjas_preferidas,
+        franjas_bloqueadas=body.franjas_bloqueadas,
+    )
     return _p(prof)
 
 
@@ -276,7 +342,7 @@ async def listar_salones():
 
 @app.post("/api/salones", summary="Crear salón", status_code=201)
 async def crear_salon(body: SalonIn):
-    salon = store.add_salon(body.nombre, body.capacidad)
+    salon = store.add_salon(body.nombre, body.capacidad, tipo=body.tipo)
     return _s(salon)
 
 
@@ -340,11 +406,11 @@ async def listar_sesiones():
 # RUTAS — Optimización
 # ===========================================================================
 
-@app.post("/api/optimizar", summary="Ejecutar algoritmo genético (síncrono)")
+@app.post("/api/optimizar", summary="Ejecutar algoritmo genético")
 async def optimizar(params: ParamsRequest) -> dict[str, Any]:
     """
-    Corre el AG completo con los datos actuales del sistema.
-    Para actualizaciones generación por generación usa el WebSocket /ws/optimizar.
+    Corre el AG completo y devuelve el resultado final junto con el historial
+    de todas las generaciones (para graficar la convergencia en el cliente).
     """
     _require_ready(semestres_filtro=params.semestres_filtro)
 
@@ -372,73 +438,104 @@ async def optimizar(params: ParamsRequest) -> dict[str, Any]:
         })
         resultado_final = gen_result.to_dict()
 
+    mejor_horario  = resultado_final.get("mejor_horario", [])
+    mejor_fitness  = resultado_final.get("mejor_fitness", 0)
+    conflictos_fin = resultado_final.get("conflictos_mejor", 0)
+
+    # Persistir el mejor horario para consulta posterior sin re-optimizar
+    store.save_ultimo_horario({
+        "fecha":      datetime.datetime.now().isoformat(),
+        "fitness":    mejor_fitness,
+        "conflictos": conflictos_fin,
+        "parametros": params.model_dump(),
+        "horario":    mejor_horario,
+    })
+
     return {
         "parametros":              params.model_dump(),
         "generaciones_ejecutadas": len(historial),
         "historial":               historial,
-        "mejor_horario":           resultado_final.get("mejor_horario", []),
-        "mejor_fitness":           resultado_final.get("mejor_fitness", 0),
-        "conflictos_finales":      resultado_final.get("conflictos_mejor", 0),
+        "mejor_horario":           mejor_horario,
+        "mejor_fitness":           mejor_fitness,
+        "conflictos_finales":      conflictos_fin,
+        "razon_parada":            resultado_final.get("razon_parada", ""),
+        "conflictos_detalle":      resultado_final.get("conflictos_detalle", []),
     }
 
 
-@app.websocket("/ws/optimizar")
-async def ws_optimizar(websocket: WebSocket):
+# ===========================================================================
+# RUTAS — Último horario y estadísticas
+# ===========================================================================
+
+@app.get("/api/ultimo-horario", summary="Último horario optimizado guardado")
+async def get_ultimo_horario() -> dict[str, Any]:
     """
-    WebSocket para visualización en tiempo real.
-
-    El cliente envía un JSON con los parámetros (igual que ParamsRequest).
-    Mensajes del servidor:
-      { "tipo": "generacion", "datos": { ...ResultadoGeneracion... } }
-      { "tipo": "finalizado",  "datos": { ...último resultado...  } }
-      { "tipo": "error",       "mensaje": "..."                    }
+    Retorna el horario resultado de la última ejecución del algoritmo genético,
+    persistido en disco. No requiere re-optimizar.
     """
-    await websocket.accept()
+    data = store.get_ultimo_horario()
+    if data is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No hay horario guardado. Ejecuta la optimización primero.",
+        )
+    return data
 
-    try:
-        raw    = await websocket.receive_text()
-        params = ParamsRequest(**json.loads(raw))
-    except Exception as exc:
-        await websocket.send_json({"tipo": "error", "mensaje": f"Parámetros inválidos: {exc}"})
-        await websocket.close()
-        return
 
-    try:
-        _require_ready(semestres_filtro=params.semestres_filtro)
-    except HTTPException as exc:
-        await websocket.send_json({"tipo": "error", "mensaje": exc.detail})
-        await websocket.close()
-        return
+@app.get("/api/estadisticas", summary="Estadísticas del último horario optimizado")
+async def get_estadisticas() -> dict[str, Any]:
+    """
+    Calcula y retorna métricas sobre el último horario guardado:
+      - Carga semanal por profesor (horas lectivas totales)
+      - Número de sesiones por día de la semana
+      - Horas asignadas por salón
+      - Sesiones por semestre
+      - Resumen de uso de laboratorios
+    """
+    data = store.get_ultimo_horario()
+    if data is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No hay horario guardado. Ejecuta la optimización primero.",
+        )
 
-    ag_params = ParametrosAG(
-        tam_poblacion=params.tam_poblacion,
-        num_generaciones=params.num_generaciones,
-        prob_cruzamiento=params.prob_cruzamiento,
-        prob_mutacion=params.prob_mutacion,
-        num_elite=params.num_elite,
-        tam_torneo=params.tam_torneo,
-        paciencia=params.paciencia,
-    )
-    ag = crear_ag_desde_store(ag_params, semestres_filtro=params.semestres_filtro)
+    horario: list[dict] = data.get("horario", [])
 
-    try:
-        resultado_final: dict = {}
-        for gen_result in ag.evolucionar(semilla=params.semilla):
-            await websocket.send_json({"tipo": "generacion", "datos": gen_result.to_dict()})
-            await asyncio.sleep(0)
-            resultado_final = gen_result.to_dict()
+    carga_profesor:    dict[str, int] = {}
+    clases_por_dia:    dict[str, int] = {}
+    horas_por_salon:   dict[str, int] = {}
+    clases_por_semestre: dict[int, int] = {}
+    uso_laboratorio:   dict[str, int] = {}   # salon_tipo → horas asignadas
 
-        await websocket.send_json({"tipo": "finalizado", "datos": resultado_final})
+    for asig in horario:
+        horas = asig.get("duracion_horas", 0)
 
-    except WebSocketDisconnect:
-        pass
-    except Exception as exc:
-        await websocket.send_json({"tipo": "error", "mensaje": str(exc)})
-    finally:
-        try:
-            await websocket.close()
-        except Exception:
-            pass
+        prof  = asig.get("profesor", "Desconocido")
+        carga_profesor[prof] = carga_profesor.get(prof, 0) + horas
+
+        dia   = asig.get("dia", "?")
+        clases_por_dia[dia] = clases_por_dia.get(dia, 0) + 1
+
+        salon = asig.get("salon", "?")
+        horas_por_salon[salon] = horas_por_salon.get(salon, 0) + horas
+
+        sem   = asig.get("semestre", 0)
+        clases_por_semestre[sem] = clases_por_semestre.get(sem, 0) + 1
+
+        tipo  = asig.get("salon_tipo", "aula")
+        uso_laboratorio[tipo] = uso_laboratorio.get(tipo, 0) + horas
+
+    return {
+        "fecha_optimizacion":     data.get("fecha"),
+        "fitness":                data.get("fitness", 0),
+        "conflictos":             data.get("conflictos", 0),
+        "total_sesiones":         len(horario),
+        "carga_semanal_profesor": dict(sorted(carga_profesor.items())),
+        "clases_por_dia":         dict(sorted(clases_por_dia.items())),
+        "horas_por_salon":        dict(sorted(horas_por_salon.items())),
+        "clases_por_semestre":    dict(sorted(clases_por_semestre.items())),
+        "horas_por_tipo_salon":   uso_laboratorio,
+    }
 
 
 # ===========================================================================
@@ -446,17 +543,22 @@ async def ws_optimizar(websocket: WebSocket):
 # ===========================================================================
 
 def _m(m) -> dict:
-    return {"id": m.id, "nombre": m.nombre, "semestre": m.semestre,
-            "grupo": m.grupo, "creditos": m.creditos, "bloques": m.bloques,
-            "horas_semanales": m.horas_semanales,
-            "sesiones_por_semana": m.sesiones_por_semana}
+    return {
+        "id": m.id, "nombre": m.nombre, "semestre": m.semestre,
+        "grupo": m.grupo, "creditos": m.creditos, "bloques": m.bloques,
+        "horas_semanales": m.horas_semanales, "sesiones_por_semana": m.sesiones_por_semana,
+        "num_alumnos": m.num_alumnos, "requiere_laboratorio": m.requiere_laboratorio,
+    }
 
 def _p(p) -> dict:
-    return {"id": p.id, "nombre": p.nombre, "materias_ids": p.materias_ids,
-            "franjas_preferidas": p.franjas_preferidas}
+    return {
+        "id": p.id, "nombre": p.nombre, "materias_ids": p.materias_ids,
+        "franjas_preferidas": p.franjas_preferidas,
+        "franjas_bloqueadas": p.franjas_bloqueadas,
+    }
 
 def _s(s) -> dict:
-    return {"id": s.id, "nombre": s.nombre, "capacidad": s.capacidad}
+    return {"id": s.id, "nombre": s.nombre, "capacidad": s.capacidad, "tipo": s.tipo}
 
 def _f(f) -> dict:
     return {"id": f.id, "dia": f.dia, "hora_inicio": f.hora_inicio, "hora_fin": f.hora_fin}

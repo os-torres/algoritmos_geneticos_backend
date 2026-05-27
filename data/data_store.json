@@ -222,12 +222,10 @@
     },
     {
       "id": 2,
-      "nombre": "Dra. Ciencias Básicas",
+      "nombre": "Dra. Física",
       "materias_ids": [
         2,
-        3,
-        9,
-        10
+        9
       ],
       "franjas_preferidas": [
         1,
@@ -260,6 +258,42 @@
     },
     {
       "id": 3,
+      "nombre": "Dra. Biología",
+      "materias_ids": [
+        3,
+        10
+      ],
+      "franjas_preferidas": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        17,
+        18,
+        19,
+        20,
+        21,
+        25,
+        26,
+        27,
+        28,
+        29,
+        33,
+        34,
+        35,
+        36,
+        37
+      ],
+      "franjas_bloqueadas": []
+    },
+    {
+      "id": 4,
       "nombre": "Prof. Programación",
       "materias_ids": [
         5,
@@ -310,7 +344,7 @@
       "franjas_bloqueadas": []
     },
     {
-      "id": 4,
+      "id": 5,
       "nombre": "Prof. Ing. Software",
       "materias_ids": [
         4,
@@ -336,12 +370,36 @@
       "franjas_bloqueadas": []
     },
     {
-      "id": 5,
-      "nombre": "Prof. Humanidades",
+      "id": 6,
+      "nombre": "Prof. Comunicación",
       "materias_ids": [
         6,
+        13
+      ],
+      "franjas_preferidas": [
+        6,
         7,
-        13,
+        8,
+        14,
+        15,
+        16,
+        22,
+        23,
+        24,
+        30,
+        31,
+        32,
+        38,
+        39,
+        40
+      ],
+      "franjas_bloqueadas": []
+    },
+    {
+      "id": 7,
+      "nombre": "Prof. Deportes",
+      "materias_ids": [
+        7,
         14
       ],
       "franjas_preferidas": [

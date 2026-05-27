@@ -2,12 +2,15 @@
 Capa de persistencia — almacena y gestiona los datos del usuario en disco (JSON).
 
 Al iniciar el servidor:
-  - Si existe data_store.json → lo carga.
+  - Si existe data/data_store.json → lo carga.
   - Si no existe → carga los datos de muestra de data.py y guarda el archivo.
 
 El usuario puede modificar materias, profesores, salones y franjas a través de
-los endpoints CRUD, y los cambios se persisten automáticamente en data_store.json.
+los endpoints CRUD, y los cambios se persisten automáticamente en data/data_store.json.
 Las sesiones de clase se generan automáticamente a partir de materias + profesores.
+
+En producción (IIS) solo la carpeta data/ necesita permisos de escritura;
+los archivos Python pueden quedar protegidos como solo lectura.
 """
 
 import json
@@ -26,9 +29,13 @@ _NOMBRES_AUTO = [
     "Salón Múltiple 1", "Salón Múltiple 2", "Salón Múltiple 3",
 ]
 
-# Ruta absoluta al lado del propio storage.py
-# → funciona tanto en desarrollo local como en servicio Windows
-STORE_FILE = Path(__file__).parent / "data_store.json"
+# Ruta absoluta del archivo de datos.
+# Se guarda en data/ (subcarpeta separada de los archivos Python)
+# para que en IIS solo esa carpeta necesite permisos de escritura.
+_DATA_DIR           = Path(__file__).parent / "data"
+_DATA_DIR.mkdir(exist_ok=True)
+STORE_FILE          = _DATA_DIR / "data_store.json"
+ULTIMO_HORARIO_FILE = _DATA_DIR / "ultimo_horario.json"
 _lock = Lock()
 
 
@@ -90,12 +97,14 @@ class DataStore:
             nuevas: list[Materia] = []
             for i, m in enumerate(raw_mats):
                 nuevas.append(Materia(
-                    id       = base_id + i,
-                    nombre   = m["nombre"],
-                    semestre = int(m.get("semestre", 1)),
-                    grupo    = str(m.get("grupo", "A")).upper(),
-                    creditos = int(m.get("creditos", 3)),
-                    bloques  = [int(b) for b in m.get("bloques", [2, 2])],
+                    id                   = base_id + i,
+                    nombre               = m["nombre"],
+                    semestre             = int(m.get("semestre", 1)),
+                    grupo                = str(m.get("grupo", "A")).upper(),
+                    creditos             = int(m.get("creditos", 3)),
+                    bloques              = [int(b) for b in m.get("bloques", [2, 2])],
+                    num_alumnos          = int(m.get("num_alumnos", 30)),
+                    requiere_laboratorio = bool(m.get("requiere_laboratorio", False)),
                 ))
 
             # Índice (nombre, grupo) → id para vincular profesores
@@ -114,7 +123,6 @@ class DataStore:
             for j, p in enumerate(raw_profs):
                 mids: list[int] = []
                 for ref in p.get("materias", []):
-                    # ref puede ser ["Nombre", "Grupo"] o "Nombre Gr.Grupo"
                     if isinstance(ref, (list, tuple)) and len(ref) == 2:
                         key = (str(ref[0]), str(ref[1]).upper())
                     else:
@@ -122,10 +130,11 @@ class DataStore:
                     if key in idx:
                         mids.append(idx[key])
                 nuevos_profs.append(Profesor(
-                    id                = base_pid + j,
-                    nombre            = p["nombre"],
-                    materias_ids      = mids,
-                    franjas_preferidas= [int(x) for x in p.get("franjas_preferidas", [])],
+                    id                 = base_pid + j,
+                    nombre             = p["nombre"],
+                    materias_ids       = mids,
+                    franjas_preferidas = [int(x) for x in p.get("franjas_preferidas", [])],
+                    franjas_bloqueadas = [int(x) for x in p.get("franjas_bloqueadas", [])],
                 ))
 
             # ── Salones (opcional) ──
@@ -134,7 +143,8 @@ class DataStore:
             if raw_salones is not None:
                 base_sid = 1 if accion == "reemplazar" else max((s.id for s in self._salones), default=0) + 1
                 nuevos_salones = [
-                    Salon(base_sid + k, s["nombre"], int(s.get("capacidad", 30)))
+                    Salon(base_sid + k, s["nombre"], int(s.get("capacidad", 30)),
+                          tipo=str(s.get("tipo", "aula")))
                     for k, s in enumerate(raw_salones)
                 ]
 
@@ -226,6 +236,7 @@ class DataStore:
         Genera sesiones a partir de las materias y profesores actuales.
         Si `semestres` es una lista no vacía, solo incluye las materias de esos semestres.
         Si es None o lista vacía, devuelve todas las sesiones.
+        Propaga num_alumnos y requiere_laboratorio desde cada Materia.
         """
         sesiones: list[SesionClase] = []
         sid = 1
@@ -250,6 +261,8 @@ class DataStore:
                     duracion_horas=duracion,
                     nombre_materia=mat.nombre,
                     nombre_profesor=profesor.nombre,
+                    num_alumnos=mat.num_alumnos,
+                    requiere_laboratorio=mat.requiere_laboratorio,
                 ))
                 sid += 1
         return sesiones
@@ -274,11 +287,17 @@ class DataStore:
     def get_materia(self, mid: int) -> Materia | None:
         return next((m for m in self._materias if m.id == mid), None)
 
-    def add_materia(self, nombre: str, semestre: int, grupo: str,
-                    creditos: int, bloques: list[int]) -> Materia:
+    def add_materia(
+        self, nombre: str, semestre: int, grupo: str, creditos: int,
+        bloques: list[int], num_alumnos: int = 30,
+        requiere_laboratorio: bool = False,
+    ) -> Materia:
         with _lock:
             new_id = max((m.id for m in self._materias), default=0) + 1
-            mat = Materia(new_id, nombre, semestre, grupo, creditos, bloques)
+            mat = Materia(
+                new_id, nombre, semestre, grupo, creditos, bloques,
+                num_alumnos=num_alumnos, requiere_laboratorio=requiere_laboratorio,
+            )
             self._materias.append(mat)
             self._save()
         return mat
@@ -314,11 +333,16 @@ class DataStore:
     def get_profesor(self, pid: int) -> Profesor | None:
         return next((p for p in self._profesores if p.id == pid), None)
 
-    def add_profesor(self, nombre: str, materias_ids: list[int],
-                     franjas_preferidas: list[int]) -> Profesor:
+    def add_profesor(
+        self, nombre: str, materias_ids: list[int],
+        franjas_preferidas: list[int], franjas_bloqueadas: list[int] | None = None,
+    ) -> Profesor:
         with _lock:
             new_id = max((p.id for p in self._profesores), default=0) + 1
-            prof = Profesor(new_id, nombre, materias_ids, franjas_preferidas)
+            prof = Profesor(
+                new_id, nombre, materias_ids, franjas_preferidas,
+                franjas_bloqueadas=franjas_bloqueadas or [],
+            )
             self._profesores.append(prof)
             self._save()
         return prof
@@ -350,10 +374,10 @@ class DataStore:
     def get_salon(self, sid: int) -> Salon | None:
         return next((s for s in self._salones if s.id == sid), None)
 
-    def add_salon(self, nombre: str, capacidad: int) -> Salon:
+    def add_salon(self, nombre: str, capacidad: int, tipo: str = "aula") -> Salon:
         with _lock:
             new_id = max((s.id for s in self._salones), default=0) + 1
-            salon = Salon(new_id, nombre, capacidad)
+            salon = Salon(new_id, nombre, capacidad, tipo=tipo)
             self._salones.append(salon)
             self._save()
         return salon
@@ -414,6 +438,23 @@ class DataStore:
         return changed
 
     # ------------------------------------------------------------------
+    # Último horario optimizado
+    # ------------------------------------------------------------------
+
+    def save_ultimo_horario(self, data: dict) -> None:
+        """Persiste el resultado de la última optimización exitosa."""
+        with _lock:
+            with open(ULTIMO_HORARIO_FILE, "w", encoding="utf-8") as fh:
+                json.dump(data, fh, ensure_ascii=False, indent=2)
+
+    def get_ultimo_horario(self) -> dict | None:
+        """Retorna el último horario guardado, o None si no existe."""
+        if not ULTIMO_HORARIO_FILE.exists():
+            return None
+        with open(ULTIMO_HORARIO_FILE, encoding="utf-8") as fh:
+            return json.load(fh)
+
+    # ------------------------------------------------------------------
     # Resumen / validación
     # ------------------------------------------------------------------
 
@@ -442,15 +483,21 @@ class DataStore:
 # ------------------------------------------------------------------
 
 def _materia_to_dict(m: Materia) -> dict:
-    return {"id": m.id, "nombre": m.nombre, "semestre": m.semestre,
-            "grupo": m.grupo, "creditos": m.creditos, "bloques": m.bloques}
+    return {
+        "id": m.id, "nombre": m.nombre, "semestre": m.semestre,
+        "grupo": m.grupo, "creditos": m.creditos, "bloques": m.bloques,
+        "num_alumnos": m.num_alumnos, "requiere_laboratorio": m.requiere_laboratorio,
+    }
 
 def _profesor_to_dict(p: Profesor) -> dict:
-    return {"id": p.id, "nombre": p.nombre, "materias_ids": p.materias_ids,
-            "franjas_preferidas": p.franjas_preferidas}
+    return {
+        "id": p.id, "nombre": p.nombre, "materias_ids": p.materias_ids,
+        "franjas_preferidas": p.franjas_preferidas,
+        "franjas_bloqueadas": p.franjas_bloqueadas,
+    }
 
 def _salon_to_dict(s: Salon) -> dict:
-    return {"id": s.id, "nombre": s.nombre, "capacidad": s.capacidad}
+    return {"id": s.id, "nombre": s.nombre, "capacidad": s.capacidad, "tipo": s.tipo}
 
 def _franja_to_dict(f: FranjaHoraria) -> dict:
     return {"id": f.id, "dia": f.dia, "hora_inicio": f.hora_inicio, "hora_fin": f.hora_fin}
